@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Catdisplayeditor">
+    <output-path>$PROJECT_DIR$/out/artifacts/Catdisplayeditor</output-path>
+    <root id="archive" name="Catdisplayeditor.jar">
+      <element id="module-output" name="Catdisplayeditor" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>

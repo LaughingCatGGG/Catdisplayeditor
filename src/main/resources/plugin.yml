@@ -1,0 +1,16 @@
+name: Catdisplayeditor
+version: '${project.version}'
+main: org.catplugin.catdisplayeditor.Catdisplayeditor
+api-version: '1.20'
+load: STARTUP
+commands:
+  catdisplay:
+    #描述这个命令
+    description: 测试.
+    #用法
+    usage: /<command>
+    #执行此命令的人所需的权限
+    permission: ''
+    #没有权限的提示消息
+    permission-message: 你不能执行它.
+

@@ -1,0 +1,21 @@
+# 插件的名字
+name: Catdisplayeditor
+# 插件的版本
+version: 1.0.0
+# 插件的主类
+main: org.catplugin.catdisplayeditor.Catdisplayeditor
+# 插件的作者
+author: laughing_cat
+# 插件的介绍
+description: block_display editor
+commands:
+  catdisplay:
+    #描述这个命令
+    description: 测试.
+    #用法
+    usage: /<command>
+    #执行此命令的人所需的权限
+    permission: ''
+    #没有权限的提示消息
+    permission-message: 你不能执行它.
+
