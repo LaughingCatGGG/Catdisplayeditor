@@ -379,7 +379,7 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         @EventHandler
         public void onleave(PlayerQuitEvent event){
             Player player = (Player) event.getPlayer();
-            //player.sendMessage("你关闭了菜单");
+            //wplayer.sendMessage("你关闭了菜单");
             guida.remove(player.getUniqueId());
             getentity.guida.remove(player.getUniqueId());
             blockd.remove(player.getUniqueId());
