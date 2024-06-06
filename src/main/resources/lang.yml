@@ -4,49 +4,44 @@ menu:
   material: '§6§l在下方槽位设置方块'
   pos_x: '§a设置X轴坐标'
   pos_xlore:
-    - "§d左键增加0.1,右键减少0.1"
-    - "§dshift+左键增加1,shift+右键减少1"
+    - "§e点击使用滚轮调节"
     - "§d中键输入数值调节"
   pos_y: '§a设置Y轴坐标'
   pos_ylore:
-    - "§d左键增加0.1,右键减少0.1"
-    - "§dshift+左键增加1,shift+右键减少1"
+    - "§e点击使用滚轮调节"
     - "§d中键输入数值调节"
   pos_z: '§a设置Z轴坐标'
   pos_zlore:
-    - "§d左键增加0.1,右键减少0.1"
-    - "§dshift+左键增加1,shift+右键减少1"
+    - "§e点击使用滚轮调节"
     - "§d中键输入数值调节"
   tar_x: "§b设置相对坐标X"
   tar_xlore:
-    - "§d左键增加0.1,右键减少0.1"
-    - "§dshift+左键增加1,shift+右键减少1"
+    - "§e点击使用滚轮调节"
     - "§d中键输入精确数值"
   tar_y: "§b设置相对坐标Y"
   tar_ylore:
-    - "§d左键增加0.1,右键减少0.1"
-    - "§dshift+左键增加1,shift+右键减少1"
+    - "§e点击使用滚轮调节"
     - "§d中键输入精确数值"
   tar_z: "§b设置相对坐标Z"
   tar_zlore:
-    - "§d左键增加0.1,右键减少0.1"
-    - "§dshift+左键增加1,shift+右键减少1"
+    - "§e点击使用滚轮调节"
     - "§d中键输入精确数值"
   origin: '§e设置相对坐标为中心点'
   sizeX: '§c设置X轴缩放'
   sizelore:
-    - "§d左键增加0.01,右键减少0.01"
-    - "§dshift+左键增加0.1,shift+右键减少0.1"
+    - "§e点击使用滚轮调节"
     - "§d中键输入精确数值"
   sizeY: '§c设置Y轴缩放'
   sizeZ: '§c设置Z轴缩放'
   sizeE: '§c三轴等效缩放'
-  wightV: '§5设置横向视角'
-  heightV: '§5设置纵向视角'
+  wightV: '§5设置横向视角 - §c难以使用'
+  heightV: '§5设置纵向视角 - §c难以使用'
   Vlore:
     - "§d左键增加0.1,右键减少0.1"
     - "§dshift+左键增加1,shift+右键减少1"
     - "§d中键输入精确数值"
+  Playvalue: "点击设置精度值"
+  ValueLore: "当前精度为 "
   light: "§e设置光源渲染"
   lightLore:
     - "§d左键Block增加1,右键Block减少1"
@@ -55,13 +50,16 @@ menu:
   sendNumber: '§6请输入一个值:'
   NumberE: "§c错误的数字:不可输入字符!"
   spawned: "§a已生成一个展示实体"
+  editmessage: "§6§l您已进入编辑状态，点击鼠标左键完成编辑。"
 menu2:
   name: '§a§l附近的实体列表'
 Item:
   name: '§6展示方块编辑器'
   lore:
   - '§b右键使用查看附近的展示方块'
-  - '§a左键在当前坐标新建展示方块'
+  - '§aSHIFT+左键在玩家位置方块 §c放置/粘贴 §a一个展示方块'
+  - '§e左键进行确认操作'
+  - '§dSHIFT+右键删除剪贴板'
 cmd:
   notop: '你不是OP无法使用此命令'
   noarg: '请输入指令值'

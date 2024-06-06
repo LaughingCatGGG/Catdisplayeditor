@@ -65,7 +65,7 @@ public class getentity implements Listener {
                 "xlxxxxxnx",
         };
         // x 背景板 l 上一页 n 下一页
-        Inventory gui = Bukkit.createInventory(p, 54, dataload.Lname + ":" + String.valueOf(Pages));
+        Inventory gui = Bukkit.createInventory(p, 54, dataload.Lname + ":" + Pages);
         ItemStack bk = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         ItemMeta bks = bk.getItemMeta();
         if (bks != null) {
@@ -98,7 +98,7 @@ public class getentity implements Listener {
                         im = new ItemStack(bd.getBlock().getMaterial());
                         ItemMeta ims = im.getItemMeta();
                         if (ims != null) {
-                            ims.setDisplayName("No." + String.valueOf(i * 9 + j));
+                            ims.setDisplayName("No." + (i * 9 + j));
                         }
                         im.setItemMeta(ims);
                         if (arr[j] == ' ') {
@@ -109,7 +109,7 @@ public class getentity implements Listener {
                         im = new ItemStack(Material.BARRIER);
                         ItemMeta ims = im.getItemMeta();
                         if (ims != null) {
-                            ims.setDisplayName("No." + String.valueOf(i * 9 + j));
+                            ims.setDisplayName("No." + (i * 9 + j));
                         }
                         im.setItemMeta(ims);
                         if (arr[j] == ' ') {
@@ -165,12 +165,13 @@ public class getentity implements Listener {
                     p.sendMessage("Don't Click!");
                     e.setCancelled(true);
                 } else if (rawSlot < pldata.get(p.getUniqueId()).getEntities().size()) {
-                    Catdisplayeditor.getInstance().openCowGUI(p, (BlockDisplay) pldata.get(p.getUniqueId()).getEntities().get(rawSlot + (pldata.get(p.getUniqueId()).getPage() - 1) * 44));
+                    p.closeInventory();
+                    Catdisplayeditor.openCowGUI(p, (BlockDisplay) pldata.get(p.getUniqueId()).getEntities().get(rawSlot + (pldata.get(p.getUniqueId()).getPage() - 1) * 44));
                     //p.closeInventory();
                     e.setCancelled(true);
                 } else
                     e.setCancelled(true);
-                    p.sendMessage(p.toString());
+                   // p.sendMessage(p.toString());
             }
         }
     }

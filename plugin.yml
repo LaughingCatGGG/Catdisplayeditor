@@ -1,7 +1,7 @@
 # 插件的名字
 name: Catdisplayeditor
 # 插件的版本
-version: 1.0.0
+version: 1.0.1
 # 插件的主类
 main: org.catplugin.catdisplayeditor.Catdisplayeditor
 # 插件的作者

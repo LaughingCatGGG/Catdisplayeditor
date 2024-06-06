@@ -27,8 +27,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.catplugin.catdisplayeditorymal.dataload;
 
+import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.List;
 
 public final class Catdisplayeditor extends JavaPlugin implements Listener{
     public static Catdisplayeditor Plugin;
@@ -52,11 +54,11 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         getServer().getPluginManager().registerEvents(this, this);
         Objects.requireNonNull(getCommand("catdisplay")).setExecutor(this);
         Objects.requireNonNull(getCommand("catdisplay")).setTabCompleter(this);
-        instance = this;
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new BlockdisplayListener(), this);
         Bukkit.getPluginManager().registerEvents(new MenuListener(),this);
         Bukkit.getPluginManager().registerEvents(new getentity(),this);
+        instance = this;
     }
     public void onLoadconfig(){
         open = this.getConfig().getString("test");
@@ -64,20 +66,20 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
     public static Catdisplayeditor getInstance() {
         return instance;
     }
-    public void setLight(Player player){
+    public static void setLight(Player player){
         if (blockd.get(player.getUniqueId()).getBrightness() == null){
             Display.Brightness br = new Display.Brightness(15,0);
             blockd.get(player.getUniqueId()).setBrightness(br);
         }
     }
 
-    public void openCowGUI(Player player,BlockDisplay blockdis) {
+    public static void openCowGUI(Player player, BlockDisplay blockdis) {
         blockd.put(player.getUniqueId(),blockdis);
         //blockmain = blockdis;
         setLight(player);
         String[] guitem = new String[]{
                 " p   xyz ",
-                " a       ",
+                " a  0    ",
                 "  rtu  o ",
                 "  bcd  e ",
                 "  w h  l ",
@@ -99,20 +101,20 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         ItemStack xbk = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta xbks = xbk.getItemMeta();
         Objects.requireNonNull(xbks);
-        xbks.setDisplayName(dataload.pos_x+"X:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getX())+"Y:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getY())+"Z"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getZ()));
+        xbks.setDisplayName(dataload.pos_x+"X:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getX())+"Y:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getY())+"Z:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getZ()));
         xbk.setItemMeta(xbks);
         xbks.setLore(Arrays.asList(dataload.pos_xlore));
         xbk.setItemMeta(xbks);
         ItemStack ybk = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta ybks = ybk.getItemMeta();
         Objects.requireNonNull(ybks);
-        ybks.setDisplayName(dataload.pos_y+"X:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getX())+"Y:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getY())+"Z"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getZ()));
+        ybks.setDisplayName(dataload.pos_y+"X:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getX())+"Y:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getY())+"Z:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getZ()));
         ybks.setLore(Arrays.asList(dataload.pos_ylore));
         ybk.setItemMeta(ybks);
         ItemStack zbk = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta zbks = zbk.getItemMeta();
         Objects.requireNonNull(zbks);
-        zbks.setDisplayName(dataload.pos_z+"X:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getX())+"Y:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getY())+"Z"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getZ()));
+        zbks.setDisplayName(dataload.pos_z+"X:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getX())+"Y:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getY())+"Z:"+String.format("%.2f",blockd.get(player.getUniqueId()).getLocation().getZ()));
         zbks.setLore(Arrays.asList(dataload.pos_zlore));
         zbk.setItemMeta(zbks);
         ItemStack txbk = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
@@ -188,6 +190,15 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         ItemStack aitem = new ItemStack(blockdis.getBlock().getMaterial());
         ItemStack kill = new ItemStack(Material.BARRIER);
         ItemMeta kim = kill.getItemMeta();
+        ItemStack changenum = new ItemStack(Material.GOLDEN_APPLE);
+        ItemMeta changenumme = changenum.getItemMeta();
+        Objects.requireNonNull(changenumme);
+        changenumme.setDisplayName(dataload.Playvalue);
+        if(!MenuListener.playernum.containsKey(player.getUniqueId())){
+            MenuListener.playernum.put(player.getUniqueId(),0.1f);
+        }
+        changenumme.setLore(List.of(dataload.ValueLore +MenuListener.playernum.get(player.getUniqueId())));
+        changenum.setItemMeta(changenumme);
         if (kim != null) {
             kim.setDisplayName("§4§lKILL");
         }
@@ -249,9 +260,12 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
                 if (arr[j] == 'k'){
                     gui.setItem(i*9+j,kill);
                 }
+                if (arr[j] == '0'){
+                    gui.setItem(i*9+j,changenum);
+                }
             }
         }
-        player.closeInventory();
+        //player.closeInventory();
         guida.put(player.getUniqueId(),gui);
         player.openInventory(guida.get(player.getUniqueId()));
     }
@@ -266,6 +280,10 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
     public void onDisable() {
         // Plugin shutdown logic
         say("展示方块编辑器已卸载");
+        guida.clear();
+        getentity.guida.clear();
+        blockd.clear();
+        getentity.pldata.clear();
     }
     public static void say(String s) {
         CommandSender sender = Bukkit.getConsoleSender();
@@ -351,22 +369,28 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         @EventHandler
         public void onRightClick(PlayerInteractEvent event) {
             Player player = event.getPlayer();
-            player.sendMessage(player.toString());
+            //player.sendMessage(player.toString());
             ItemStack item = player.getInventory().getItemInMainHand();
             World world = player.getWorld();
             //BlockData bdta = Bukkit.createBlockData(Material.REDSTONE_BLOCK);;
             if(hasCatDisplayTag(item)){
-                if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                if(event.getAction().name().contains("RIGHT_CLICK") && !player.isSneaking()){
                      getentity.getneariset(player,1);
-                }
-                else if(event.getAction().equals(Action.LEFT_CLICK_AIR) ||event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-                    Location enlo = new Location(player.getLocation().getWorld(),player.getLocation().getX(),player.getLocation().getY(),player.getLocation().getZ(),0,0);
+                } //右键判断
+                else if(event.getAction().name().contains("LEFT_CLICK") && player.isSneaking()){
+                    Location enlo = new Location(player.getLocation().getWorld(),player.getLocation().getBlockX(),player.getLocation().getBlockY(),player.getLocation().getBlockZ(),0,0);
                     BlockDisplay en = (BlockDisplay) world.spawnEntity(enlo, EntityType.BLOCK_DISPLAY);
                     en.setBlock(Bukkit.createBlockData(Material.REDSTONE_BLOCK));
                     player.sendMessage(dataload.spawned);
-                }
+                }// shift右键判断
                 event.setCancelled(true);
             }
+            if(MenuListener.playeraction.containsKey(player.getUniqueId()) && (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))){
+                event.setCancelled(true);
+                player.closeInventory(); //关闭GUI
+                MenuListener.playeraction.remove(player.getUniqueId()); //删除玩家动作Map
+                openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId())); //打开GUI
+            } //拥有动作MAP时，左键取消
             // Call the method in the main plugin class to open GUI
         }
         @EventHandler

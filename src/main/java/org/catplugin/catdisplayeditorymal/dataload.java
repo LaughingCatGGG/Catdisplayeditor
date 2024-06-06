@@ -47,6 +47,9 @@ public class dataload {
     public static String reload2;
     public static String noen;
     public static String Version;
+    public static String Playvalue;
+    public static String ValueLore;
+    public static String editmessage;
     private static YamlConfiguration lang;
     public static void loadlang(){
         File file = new File(Catdisplayeditor.Plugin.getDataFolder(),"lang.yml");
@@ -94,7 +97,7 @@ public class dataload {
         printnum = lang.getString("menu.sendNumber");
         numE = lang.getString("menu.NumberE");
         spawned = lang.getString("menu.spawned");
-        itemlore = lang.getStringList("Item.lore").toArray(new String[2]);
+        itemlore = lang.getStringList("Item.lore").toArray(new String[4]);
         itemname = lang.getString("Item.name");
         notop = lang.getString("cmd.notop");
         noarg = lang.getString("cmd.noarg");
@@ -103,6 +106,9 @@ public class dataload {
         reload1 = lang.getString("cmd.reload1");
         reload2 = lang.getString("cmd.reload2");
         noen = lang.getString("cmd.noen");
+        Playvalue = lang.getString("menu.Playvalue");
+        ValueLore = lang.getString("menu.ValueLore");
+        editmessage = lang.getString("menu.editmessage");
     }
     public static String getname(){
         return name;
