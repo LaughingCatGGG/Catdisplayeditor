@@ -1,36 +1,27 @@
 package org.catplugin.catdisplayeditor;
 
-import com.google.common.collect.Multimap;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.catplugin.catdisplayeditorymal.dataload;
 
-import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.List;
 
 public final class Catdisplayeditor extends JavaPlugin implements Listener{
     public static Catdisplayeditor Plugin;
@@ -40,6 +31,7 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
     public static BlockDisplay blockmain;
     public static Map<UUID,BlockDisplay> blockd = new HashMap<>();
     public static Map<UUID,Inventory> guida = new HashMap<>();
+    public static Map<UUID, Boolean> isopen = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -80,9 +72,9 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         String[] guitem = new String[]{
                 " p   xyz ",
                 " a  0    ",
-                "  rtu  o ",
-                "  bcd  e ",
-                "  w h  l ",
+                " 1rtu  o ",
+                "2 bcd  e ",
+                "3 w h  l ",
                 "        k",
         };
         // a 物品绑定 p 槽位介绍
@@ -184,16 +176,54 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         ItemStack lt = new ItemStack(Material.LIGHT);
         ItemMeta lts = lt.getItemMeta();
         Objects.requireNonNull(lts);
-        lts.setDisplayName(dataload.light+ "BLOCK:" + Objects.requireNonNull(blockd.get(player.getUniqueId()).getBrightness()).getBlockLight() + "SKY:" + blockd.get(player.getUniqueId()).getBrightness().getSkyLight());
+        lts.setDisplayName(dataload.light + "BLOCK:" + Objects.requireNonNull(blockd.get(player.getUniqueId()).getBrightness()).getBlockLight() + "SKY:" + Objects.requireNonNull(blockd.get(player.getUniqueId()).getBrightness()).getSkyLight());
         lts.setLore(Collections.singletonList(Arrays.toString(dataload.lightlore)));
         lt.setItemMeta(lts);
-        ItemStack aitem = new ItemStack(blockdis.getBlock().getMaterial());
+        BlockDisplay bd = blockd.get(player.getUniqueId());
+        ItemStack aitem = new ItemStack(bd.getBlock().getMaterial());
+        if (bd.getBlock().getMaterial().toString().contains("POTTED")) {
+            aitem.setType(Material.FLOWER_POT);
+            ItemMeta ims = aitem.getItemMeta();
+            if (ims != null) {
+                ims.setDisplayName((String.valueOf(bd.getBlock().getMaterial().getKey())));
+            }
+            aitem.setItemMeta(ims);
+        } else if (bd.getBlock().getMaterial() == Material.FIRE) {
+            aitem.setType(Material.FLINT_AND_STEEL);
+            ItemMeta ims = aitem.getItemMeta();
+            if (ims != null) {
+                ims.setDisplayName("Fire");
+            }
+            aitem.setItemMeta(ims);
+        } else if (bd.getBlock().getMaterial() == Material.SOUL_FIRE) {
+            aitem.setType(Material.FLINT_AND_STEEL);
+            ItemMeta ims = aitem.getItemMeta();
+            if (ims != null) {
+                ims.setDisplayName("Soul_Fire");
+            }
+            aitem.setItemMeta(ims);
+        } //针对无物品方块
         ItemStack kill = new ItemStack(Material.BARRIER);
         ItemMeta kim = kill.getItemMeta();
         ItemStack changenum = new ItemStack(Material.GOLDEN_APPLE);
         ItemMeta changenumme = changenum.getItemMeta();
+        ItemStack firstr = new ItemStack(Material.SUNFLOWER);
+        ItemMeta firstrm = firstr.getItemMeta();
+        Objects.requireNonNull(firstrm);
+        firstrm.setDisplayName(dataload.firstr);
+        firstr.setItemMeta(firstrm);
+        ItemStack secondr = new ItemStack(Material.SUNFLOWER);
+        ItemMeta secondrm = secondr.getItemMeta();
+        Objects.requireNonNull(secondrm);
+        secondrm.setDisplayName(dataload.secondr);
+        secondr.setItemMeta(secondrm);
         Objects.requireNonNull(changenumme);
         changenumme.setDisplayName(dataload.Playvalue);
+        ItemStack changedata = new ItemStack(Material.NAME_TAG);
+        ItemMeta changedatam = changedata.getItemMeta();
+        Objects.requireNonNull(changedatam);
+        changedatam.setDisplayName("敬请期待");
+        changedata.setItemMeta(changedatam);
         if(!MenuListener.playernum.containsKey(player.getUniqueId())){
             MenuListener.playernum.put(player.getUniqueId(),0.1f);
         }
@@ -263,11 +293,23 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
                 if (arr[j] == '0'){
                     gui.setItem(i*9+j,changenum);
                 }
+                if (arr[j] == '1') {
+                    gui.setItem(i * 9 + j, changedata);
+                }
+                if (arr[j] == '2') {
+                    gui.setItem(i * 9 + j, firstr);
+                }
+                if (arr[j] == '3') {
+                    gui.setItem(i * 9 + j, secondr);
+                }
             }
         }
         //player.closeInventory();
         guida.put(player.getUniqueId(),gui);
         player.openInventory(guida.get(player.getUniqueId()));
+        getentity.pldata.remove(player.getUniqueId());
+        getentity.guida.remove(player.getUniqueId());
+        RocationInv.roin.remove(player.getUniqueId());
     }
 
 //    @EventHandler
@@ -393,21 +435,53 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
             } //拥有动作MAP时，左键取消
             // Call the method in the main plugin class to open GUI
         }
+
+        @EventHandler
+        public void onopengui(InventoryOpenEvent event) {
+            Player player = (Player) event.getPlayer();
+            isopen.put(player.getUniqueId(), true);
+        }
         @EventHandler
         public void onclosegui(InventoryCloseEvent event){
             Player player = (Player) event.getPlayer();
+            isopen.remove(player.getUniqueId());
             //player.sendMessage("你关闭了菜单");
-            guida.remove(player.getUniqueId());
-            getentity.guida.remove(player.getUniqueId());
+//            if(RocationInv.roin.containsKey(player.getUniqueId())){
+//                guida.remove(player.getUniqueId());
+//            }
+//            if(guida.containsKey(player.getUniqueId())){
+//                getentity.pldata.remove(player.getUniqueId());
+//                RocationInv.roin.remove(player.getUniqueId());
+//            }
+            Bukkit.getScheduler().runTaskLater(Catdisplayeditor.Plugin, () -> {
+
+//            player.sendMessage(String.valueOf(MenuListener.playerChatMap.containsKey(player.getUniqueId())));//false
+//            player.sendMessage(String.valueOf(blockd.containsKey(player.getUniqueId())));//true
+//            player.sendMessage(String.valueOf(MenuListener.playerjiao.containsKey(player.getUniqueId())));//true
+//            player.sendMessage(String.valueOf(MenuListener.playeraction.containsKey(player.getUniqueId())));//false
+//            player.sendMessage(String.valueOf(MenuListener.playernum.containsKey(player.getUniqueId())));//true
+//            player.sendMessage(String.valueOf(MenuListener.setro.containsKey(player.getUniqueId())));//true
+                if (!MenuListener.playeraction.containsKey(player.getUniqueId()) && !MenuListener.playerChatMap.containsKey(player.getUniqueId()) && !isopen.containsKey(player.getUniqueId())) {
+                    //player.sendMessage("已清除map");
+                    //player.sendMessage(String.valueOf(player.);
+                    blockd.remove(player.getUniqueId());
+                    getentity.pldata.remove(player.getUniqueId());
+                    RocationInv.roin.remove(player.getUniqueId());
+                    guida.remove(player.getUniqueId());
+                    getentity.guida.remove(player.getUniqueId());
+                }
+            }, 2);
         }
         @EventHandler
         public void onleave(PlayerQuitEvent event){
-            Player player = (Player) event.getPlayer();
+            Player player = event.getPlayer();
             //wplayer.sendMessage("你关闭了菜单");
+            MenuListener.playernum.remove(player.getUniqueId());
             guida.remove(player.getUniqueId());
             getentity.guida.remove(player.getUniqueId());
             blockd.remove(player.getUniqueId());
             getentity.pldata.remove(player.getUniqueId());
+            MenuListener.setro.remove(player.getUniqueId());
         }
     }
 }

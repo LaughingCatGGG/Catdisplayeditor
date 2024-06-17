@@ -2,6 +2,7 @@ package org.catplugin.catdisplayeditor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+//import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -14,10 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.catplugin.catdisplayeditorymal.dataload;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class getentity implements Listener {
     public static Map<UUID,playersdata> pldata = new HashMap<>();
@@ -40,7 +38,7 @@ public class getentity implements Listener {
         }
     }
     public static void showlist(Player p,List<Entity> ensl,int a) {
-        p.closeInventory();
+        //p.closeInventory();
         int totalPages = (int) Math.ceil((double) ensl.size() / 45);
         int Pages = a;
         if( a < 0){
@@ -49,7 +47,7 @@ public class getentity implements Listener {
         else if(a > totalPages){
             Pages = totalPages;
         }
-        List<Entity> ens = null;
+        List<Entity> ens ;
         if (totalPages > 1){
             ens = ensl.subList((Pages-1)*44,(Pages-1)*44+44);
         }
@@ -94,8 +92,8 @@ public class getentity implements Listener {
                     }
                     //Block bs = bd.getBlock();
                     ItemStack im;
-                    if (bd != null && bd.getBlock().getMaterial() != Material.AIR) {
-                        im = new ItemStack(bd.getBlock().getMaterial());
+                    if(bd != null && bd.getBlock().getMaterial() == Material.AIR){
+                        im = new ItemStack(Material.BARRIER);
                         ItemMeta ims = im.getItemMeta();
                         if (ims != null) {
                             ims.setDisplayName("No." + (i * 9 + j));
@@ -105,8 +103,44 @@ public class getentity implements Listener {
                             gui.setItem(i * 9 + j, im);
                         }
                     }
-                    else if(bd != null && bd.getBlock().getMaterial() == Material.AIR){
-                        im = new ItemStack(Material.BARRIER);
+                    else if(bd != null && bd.getBlock().getMaterial() == Material.FIRE){
+                        im = new ItemStack(Material.FLINT_AND_STEEL);
+                        ItemMeta ims = im.getItemMeta();
+                        if (ims != null) {
+                            ims.setDisplayName("No." + (i * 9 + j));
+                            ims.setLore(Collections.singletonList("FIRE"));
+                        }
+                        im.setItemMeta(ims);
+                        if (arr[j] == ' ') {
+                            gui.setItem(i * 9 + j, im);
+                        }
+                    }
+                    else if(bd != null && bd.getBlock().getMaterial() == Material.SOUL_FIRE){
+                        im = new ItemStack(Material.FLINT_AND_STEEL);
+                        ItemMeta ims = im.getItemMeta();
+                        if (ims != null) {
+                            ims.setDisplayName("No." + (i * 9 + j));
+                            ims.setLore(Collections.singletonList("SOUL_FIRE"));
+                        }
+                        im.setItemMeta(ims);
+                        if (arr[j] == ' ') {
+                            gui.setItem(i * 9 + j, im);
+                        }
+                    }
+                    else if(bd != null && bd.getBlock().getMaterial().toString().contains("POTTED")){
+                        im = new ItemStack(Material.FLOWER_POT);
+                        ItemMeta ims = im.getItemMeta();
+                        if (ims != null) {
+                            ims.setDisplayName("No." + (i * 9 + j));
+                            ims.setLore(Collections.singletonList(String.valueOf(bd.getBlock().getMaterial().getKey())));
+                        }
+                        im.setItemMeta(ims);
+                        if (arr[j] == ' ') {
+                            gui.setItem(i * 9 + j, im);
+                        }
+                    }
+                    else if (bd != null && bd.getBlock().getMaterial() != Material.AIR) {
+                        im = new ItemStack(bd.getBlock().getMaterial());
                         ItemMeta ims = im.getItemMeta();
                         if (ims != null) {
                             ims.setDisplayName("No." + (i * 9 + j));
@@ -132,7 +166,7 @@ public class getentity implements Listener {
             }
             }
     }
-        p.closeInventory();
+        //p.closeInventory();
         guida.put(p.getUniqueId(),gui);
         p.openInventory(guida.get(p.getUniqueId()));
 }

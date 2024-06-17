@@ -1,4 +1,7 @@
-Version: '1.0.0'
+Version: '1.0.1'
+#If you translated or changed this file, please set changed true.
+#如果你翻译/改变了这个文件，请将changed修改为ture。
+changed: false
 menu:
   name: '§a§l编辑展示实体'
   material: '§6§l在下方槽位设置方块'
@@ -26,7 +29,7 @@ menu:
   tar_zlore:
     - "§e点击使用滚轮调节"
     - "§d中键输入精确数值"
-  origin: '§e设置相对坐标为中心点'
+  origin: '§e设置相对坐标为中心点 - &c不支持旋转'
   sizeX: '§c设置X轴缩放'
   sizelore:
     - "§e点击使用滚轮调节"
@@ -51,8 +54,22 @@ menu:
   NumberE: "§c错误的数字:不可输入字符!"
   spawned: "§a已生成一个展示实体"
   editmessage: "§6§l您已进入编辑状态，点击鼠标左键完成编辑。"
+  firstr: "§a点击设置首次旋转"
+  secondr: "§a点击设置再次旋转"
 menu2:
   name: '§a§l附近的实体列表'
+menur:
+  jiao: "§a设置旋转角度"
+  jiaolore:
+    - "§f左键进入设置"
+    - "§f右键设置角度精确值"
+    - "§f中键输入角度"
+  x: "§a设置x值"
+  y: "§a设定为无旋转"
+  z: "§a设置z值"
+  setx: "§a设定为X轴旋转"
+  sety: "§a设定为Y轴旋转"
+  setz: "§a设定为Z轴旋转"
 Item:
   name: '§6展示方块编辑器'
   lore:

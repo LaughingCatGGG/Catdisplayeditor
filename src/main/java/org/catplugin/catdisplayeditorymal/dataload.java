@@ -50,6 +50,17 @@ public class dataload {
     public static String Playvalue;
     public static String ValueLore;
     public static String editmessage;
+    public static String firstr;
+    public static String secondr;
+    public static String mrjiao;
+    public static String mrx;
+    public static String mry;
+    public static String mrz;
+    public static String mrsx;
+    public static String mrsy;
+    public static String mrsz;
+    public static String[] jaolore;
+    public static Boolean changed;
     private static YamlConfiguration lang;
     public static void loadlang(){
         File file = new File(Catdisplayeditor.Plugin.getDataFolder(),"lang.yml");
@@ -57,13 +68,20 @@ public class dataload {
             Catdisplayeditor.Plugin.saveResource("lang.yml",false);
         }
         lang = YamlConfiguration.loadConfiguration(file);
-        Version = lang.getString("version");
-//        if(!Objects.equals(Version, "1.0.0")){
-//            for (int i=0;i<20;i++){
-//                Catdisplayeditor.say("lang.yml文件版本错误，请删除或更新");
-//                Catdisplayeditor.say("lang.yml file version is incorrect, please delete or update");
-//            }
-//        }
+        Version = lang.getString("Version");
+        changed = lang.getBoolean("changed");
+        if(!Objects.equals(Version, "1.0.1")){
+            if(!changed){
+                Catdisplayeditor.Plugin.saveResource("lang.yml",true);
+                loadlang();
+            }
+            else {
+                for (int i=0;i<20;i++) {
+                    Catdisplayeditor.say("lang.yml文件版本错误，请尝试更新");
+                    Catdisplayeditor.say("lang.yml file version is incorrect, please try update");
+                }
+            }
+        }
     }
     public static void load(){
 
@@ -109,6 +127,16 @@ public class dataload {
         Playvalue = lang.getString("menu.Playvalue");
         ValueLore = lang.getString("menu.ValueLore");
         editmessage = lang.getString("menu.editmessage");
+        firstr = lang.getString("menu.firstr");
+        secondr = lang.getString("menu.secondr");
+        mrjiao = lang.getString("menur.jiao");
+        mrx = lang.getString("menur.x");
+        mry = lang.getString("menur.y");
+        mrz = lang.getString("menur.z");
+        mrsx = lang.getString("menur.setx");
+        mrsy = lang.getString("menur.sety");
+        mrsz = lang.getString("menur.setz");
+        jaolore  = lang.getStringList("menur.jiaolore").toArray(new String[3]);
     }
     public static String getname(){
         return name;

@@ -14,7 +14,7 @@ public class playersdata {
         this.player = player;
     }
 
-    public List<Entity> getEntities() {
+    public List<Entity>getEntities() {
         return entities;
     }
 
