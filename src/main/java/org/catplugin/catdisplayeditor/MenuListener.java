@@ -3,13 +3,16 @@ package org.catplugin.catdisplayeditor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 //import org.bukkit.entity.Cat;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 //import org.bukkit.event.player.PlayerChatEvent;
@@ -37,6 +40,7 @@ public class MenuListener implements Listener {
     public static Map<UUID, String> playeraction = new HashMap<>();
     public static Map<UUID, String> setro = new HashMap<>();
     public static Map<UUID,Float> playerjiao = new HashMap<>();
+    public static Map<UUID,BlockDisplay> playercopy = new HashMap<>();
     //private Map<UUID,BlockDisplay> playertarget = new HashMap<>();
     //private static double num = 0;
     private static final boolean isgetnum = false;
@@ -63,6 +67,25 @@ public class MenuListener implements Listener {
                 Catdisplayeditor.openCowGUI(p, Catdisplayeditor.blockd.get(p.getUniqueId()));
                 //更新菜单
             }//更换物品格
+            else if(rawSlot==9){
+                p.sendMessage(dataload.copysuc);
+                playercopy.put(p.getUniqueId(),Catdisplayeditor.blockd.get(p.getUniqueId()));
+                p.closeInventory();
+            }
+            else if(rawSlot==19){
+                if(e.isLeftClick()){
+                    p.sendMessage(dataload.printnum);
+                    playerChatMap.put(p.getUniqueId(), "addtag");
+                    p.closeInventory();
+                }
+                else {
+                    p.sendMessage(dataload.printnum);
+                    p.sendMessage(dataload.taglist);
+                    p.sendMessage("§a"+Catdisplayeditor.blockd.get(p.getUniqueId()).getScoreboardTags());
+                    playerChatMap.put(p.getUniqueId(), "removetag");
+                    p.closeInventory();
+                }
+            }
             else if (rawSlot == 13) {
                 p.sendMessage(dataload.printnum);
                 playerChatMap.put(p.getUniqueId(), "setvalue");
@@ -102,6 +125,11 @@ public class MenuListener implements Listener {
                     p.closeInventory();
                 }
             }
+            else if (rawSlot == 11){
+                playeraction.put(p.getUniqueId(),"cloneblock");
+                p.closeInventory();
+                p.sendMessage(dataload.clickblock);
+            }//方块设置
             //XYZ坐标
             else if (rawSlot == 20) {
                 if (e.getClick() == MIDDLE) {
@@ -479,7 +507,30 @@ public class MenuListener implements Listener {
             String message = event.getMessage();
 
             // 在这里处理玩家发送的消息，例如记录日志、发送消息给其他玩家等
-            if(!canParseDouble(message)) {
+            if (Objects.equals(playerChatMap.get(playerUUID), "addtag")) {
+                Bukkit.getScheduler().runTaskLater(Catdisplayeditor.Plugin, () -> {
+                    Catdisplayeditor.blockd.get(player.getUniqueId()).addScoreboardTag(message);
+                    player.sendMessage(dataload.addtagsuc);
+                    Catdisplayeditor.openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId()));
+                    playerChatMap.remove(player.getUniqueId());
+                    event.setCancelled(true);
+                },1);
+            }
+            else if (Objects.equals(playerChatMap.get(playerUUID), "removetag")) {
+                Bukkit.getScheduler().runTaskLater(Catdisplayeditor.Plugin, () -> {
+                    if (Catdisplayeditor.blockd.get(player.getUniqueId()).getScoreboardTags().contains(message)) {
+                        Catdisplayeditor.blockd.get(player.getUniqueId()).removeScoreboardTag(message);
+                        player.sendMessage(dataload.removetagsuc);
+                        Catdisplayeditor.openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId()));
+                    } else {
+                        player.sendMessage(dataload.notag);
+                        Catdisplayeditor.openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId()));
+                    }
+                    event.setCancelled(true);
+                    playerChatMap.remove(player.getUniqueId());
+                },1);
+            }
+            else if(!canParseDouble(message)) {
                 player.sendMessage(dataload.numE);
             }
             else {
@@ -639,6 +690,7 @@ public class MenuListener implements Listener {
         Player player = event.getPlayer();
         //player.sendMessage("你改变了物品栏");
         if (playeraction.containsKey(player.getUniqueId())) {
+            if(!Objects.equals(playeraction.get(player.getUniqueId()), "cloneblock")){
             BlockDisplay tarblock = Catdisplayeditor.blockd.get(player.getUniqueId());
             Float playervalue = playernum.get(player.getUniqueId());
             //修改XYZ坐标
@@ -786,7 +838,12 @@ public class MenuListener implements Listener {
                         Quaternionf tarlocat = transf.getLeftRotation();
                         AxisAngle4f ang = new AxisAngle4f();
                         tarlocat.get(ang);
-                        ang.set((float) (ang.angle-playerjiao.get(player.getUniqueId())/180*Math.PI),ang.x,ang.y,ang.z);
+                        if((ang.angle-playerjiao.get(player.getUniqueId())/180*Math.PI < 0)){
+                            ang.set((float) (ang.angle - playerjiao.get(player.getUniqueId()) / 180 * Math.PI + 2*Math.PI), ang.x, ang.y, ang.z);
+                        }
+                        else{
+                            ang.set((float) (ang.angle - playerjiao.get(player.getUniqueId()) / 180 * Math.PI), ang.x, ang.y, ang.z);
+                        }
                         tarlocat.setAngleAxis(ang.angle,ang.x,ang.y,ang.z);
                         Transformation ntransf = new Transformation(transf.getTranslation(), tarlocat, transf.getScale(), transf.getRightRotation());
                         Catdisplayeditor.blockd.get(player.getUniqueId()).setTransformation(ntransf);
@@ -796,7 +853,12 @@ public class MenuListener implements Listener {
                         Quaternionf tarlocat = transf.getLeftRotation();
                         AxisAngle4f ang = new AxisAngle4f();
                         tarlocat.get(ang);
-                        ang.set((float) (ang.angle+playerjiao.get(player.getUniqueId())/180*Math.PI),ang.x,ang.y,ang.z);
+                        if((ang.angle-playerjiao.get(player.getUniqueId())/180*Math.PI > 2*Math.PI)){
+                            ang.set((float) (ang.angle + playerjiao.get(player.getUniqueId()) / 180 * Math.PI - 2*Math.PI), ang.x, ang.y, ang.z);
+                        }
+                        else{
+                            ang.set((float) (ang.angle + playerjiao.get(player.getUniqueId()) / 180 * Math.PI), ang.x, ang.y, ang.z);
+                        }
                         tarlocat.setAngleAxis(ang.angle,ang.x,ang.y,ang.z);
                         Transformation ntransf = new Transformation(transf.getTranslation(), tarlocat, transf.getScale(), transf.getRightRotation());
                         Catdisplayeditor.blockd.get(player.getUniqueId()).setTransformation(ntransf);
@@ -809,8 +871,12 @@ public class MenuListener implements Listener {
                             Quaternionf tarlocat = transf.getRightRotation();
                             AxisAngle4f ang = new AxisAngle4f();
                             tarlocat.get(ang);
-                            ang.set((float) (ang.angle-playerjiao.get(player.getUniqueId())/180*Math.PI),ang.x,ang.y,ang.z);
-                            tarlocat.setAngleAxis(ang.angle,ang.x,ang.y,ang.z);
+                            if ((ang.angle - playerjiao.get(player.getUniqueId()) / 180 * Math.PI < 0)) {
+                                ang.set((float) (ang.angle - playerjiao.get(player.getUniqueId()) / 180 * Math.PI + 2 * Math.PI), ang.x, ang.y, ang.z);
+                            } else {
+                                ang.set((float) (ang.angle - playerjiao.get(player.getUniqueId()) / 180 * Math.PI), ang.x, ang.y, ang.z);
+                            }
+                            tarlocat.setAngleAxis(ang.angle, ang.x, ang.y, ang.z);
                             Transformation ntransf = new Transformation(transf.getTranslation(), transf.getLeftRotation(), transf.getScale(), tarlocat);
                             Catdisplayeditor.blockd.get(player.getUniqueId()).setTransformation(ntransf);
                             //Catdisplayeditor.getInstance().openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId()));
@@ -819,15 +885,37 @@ public class MenuListener implements Listener {
                             Quaternionf tarlocat = transf.getRightRotation();
                             AxisAngle4f ang = new AxisAngle4f();
                             tarlocat.get(ang);
-                            ang.set((float) (ang.angle+playerjiao.get(player.getUniqueId())/180*Math.PI),ang.x,ang.y,ang.z);
-                            tarlocat.setAngleAxis(ang.angle,ang.x,ang.y,ang.z);
+                            if ((ang.angle - playerjiao.get(player.getUniqueId()) / 180 * Math.PI > 2 * Math.PI)) {
+                                ang.set((float) (ang.angle + playerjiao.get(player.getUniqueId()) / 180 * Math.PI - 2 * Math.PI), ang.x, ang.y, ang.z);
+                            } else {
+                                ang.set((float) (ang.angle + playerjiao.get(player.getUniqueId()) / 180 * Math.PI), ang.x, ang.y, ang.z);
+                            }
+                            tarlocat.setAngleAxis(ang.angle, ang.x, ang.y, ang.z);
                             Transformation ntransf = new Transformation(transf.getTranslation(), transf.getLeftRotation(), transf.getScale(), tarlocat);
                             Catdisplayeditor.blockd.get(player.getUniqueId()).setTransformation(ntransf);
                         }
                     }
+                    }
                 }
+                event.setCancelled(true);
             }
-            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void onbreak(BlockBreakEvent event){
+        Player player = event.getPlayer();
+        if (playeraction.containsKey(player.getUniqueId())){
+            if (Objects.equals(playeraction.get(player.getUniqueId()), "cloneblock")){
+                Block B = event.getBlock();
+                //Catdisplayeditor.blockd.get(player.getUniqueId());
+                //player.sendMessage(String.valueOf(B));
+                Catdisplayeditor.blockd.get(player.getUniqueId()).setBlock(B.getBlockData());
+                //Catdisplayeditor.blockd.get(player.getUniqueId()).set
+                player.sendMessage(dataload.clonesuc);
+                playeraction.remove(player.getUniqueId());
+                Catdisplayeditor.openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId()));
+                event.setCancelled(true);
+            }
         }
     }
 }

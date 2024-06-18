@@ -1,4 +1,4 @@
-Version: '1.0.1'
+Version: '1.0.3'
 #If you translated or changed this file, please set changed true.
 #如果你翻译/改变了这个文件，请将changed修改为ture。
 changed: false
@@ -56,6 +56,16 @@ menu:
   editmessage: "§6§l您已进入编辑状态，点击鼠标左键完成编辑。"
   firstr: "§a点击设置首次旋转"
   secondr: "§a点击设置再次旋转"
+  clone: "§a设置世界方块"
+  clickblock: "§d请左键点击一个方块"
+  clonesuc: "§6已经替换为该方块"
+  copy: "§b§l复制当前实体"
+  copysuc: "§b§l已复制此实体，使用棒棒粘贴"
+  addtag: "§5左键增加Tag 右键移除Tag"
+  removetagsuc: "§6已删除此Tag"
+  taglist: "§d当前的Tag有:"
+  notag: "§d未找到此Tag"
+  addtagsuc: "§6已增加此Tag"
 menu2:
   name: '§a§l附近的实体列表'
 menur:

@@ -62,6 +62,16 @@ public class dataload {
     public static String[] jaolore;
     public static Boolean changed;
     private static YamlConfiguration lang;
+    public static String clickblock;
+    public static String clone;
+    public static String clonesuc;
+    public static String copy;
+    public static String copysuc;
+    public static String addtag;
+    public static String taglist;
+    public static String removetagsuc;
+    public static String notag;
+    public static String addtagsuc;
     public static void loadlang(){
         File file = new File(Catdisplayeditor.Plugin.getDataFolder(),"lang.yml");
         if(!file.exists()){
@@ -70,15 +80,15 @@ public class dataload {
         lang = YamlConfiguration.loadConfiguration(file);
         Version = lang.getString("Version");
         changed = lang.getBoolean("changed");
-        if(!Objects.equals(Version, "1.0.1")){
+        if(!Objects.equals(Version, "1.0.3")){
             if(!changed){
                 Catdisplayeditor.Plugin.saveResource("lang.yml",true);
                 loadlang();
             }
             else {
                 for (int i=0;i<20;i++) {
-                    Catdisplayeditor.say("lang.yml文件版本错误，请尝试更新");
-                    Catdisplayeditor.say("lang.yml file version is incorrect, please try update");
+                    Catdisplayeditor.say("lang.yml文件版本错误，请尝试更新此文件");
+                    Catdisplayeditor.say("lang.yml file version is incorrect, please try update this file");
                 }
             }
         }
@@ -137,6 +147,16 @@ public class dataload {
         mrsy = lang.getString("menur.sety");
         mrsz = lang.getString("menur.setz");
         jaolore  = lang.getStringList("menur.jiaolore").toArray(new String[3]);
+        clone = lang.getString("menu.clone");
+        clickblock = lang.getString("menu.clickblock");
+        clonesuc = lang.getString("menu.clonesuc");
+        copy = lang.getString("menu.copy");
+        copysuc = lang.getString("menu.copysuc");
+        addtag = lang.getString("menu.addtag");
+        taglist = lang.getString("menu.taglist");
+        notag = lang.getString("menu.notag");
+        addtagsuc = lang.getString("menu.addtagsuc");
+        removetagsuc = lang.getString("menu.removetagsuc");
     }
     public static String getname(){
         return name;

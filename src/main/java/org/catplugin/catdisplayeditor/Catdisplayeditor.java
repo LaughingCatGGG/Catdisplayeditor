@@ -71,7 +71,7 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         setLight(player);
         String[] guitem = new String[]{
                 " p   xyz ",
-                " a  0    ",
+                "5a4 0    ",
                 " 1rtu  o ",
                 "2 bcd  e ",
                 "3 w h  l ",
@@ -85,7 +85,14 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         // l 亮度渲染
 
         Inventory gui = Bukkit.createInventory(player, 9*guitem.length, dataload.getname());
-        ItemStack bk = new ItemStack(Material.PINK_STAINED_GLASS_PANE);
+        chestitem cd = new chestitem();
+        cd.setitem(Material.PINK_STAINED_GLASS_PANE);
+        cd.setname(dataload.clone);
+        //cd.addlore(dataload.clone);
+        chestitem cp = new chestitem();
+        cp.setitem(Material.ARROW);
+        cp.setname(dataload.copy);
+        ItemStack bk = new ItemStack(Material.BROWN_STAINED_GLASS_PANE);
         ItemMeta bks = bk.getItemMeta();
         Objects.requireNonNull(bks);
         bks.setDisplayName(" ");
@@ -219,11 +226,13 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
         secondr.setItemMeta(secondrm);
         Objects.requireNonNull(changenumme);
         changenumme.setDisplayName(dataload.Playvalue);
-        ItemStack changedata = new ItemStack(Material.NAME_TAG);
-        ItemMeta changedatam = changedata.getItemMeta();
-        Objects.requireNonNull(changedatam);
-        changedatam.setDisplayName("敬请期待");
-        changedata.setItemMeta(changedatam);
+        chestitem changedata = new chestitem();
+        changedata.setitem(Material.NAME_TAG);
+        changedata.setname(dataload.addtag);
+        changedata.addlore(dataload.taglist);
+        for (String tag:blockd.get(player.getUniqueId()).getScoreboardTags()){
+            changedata.addlore("§f[§a"+tag+"§f]");
+        }
         if(!MenuListener.playernum.containsKey(player.getUniqueId())){
             MenuListener.playernum.put(player.getUniqueId(),0.1f);
         }
@@ -294,13 +303,19 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
                     gui.setItem(i*9+j,changenum);
                 }
                 if (arr[j] == '1') {
-                    gui.setItem(i * 9 + j, changedata);
+                    gui.setItem(i * 9 + j, changedata.getitem());
                 }
                 if (arr[j] == '2') {
                     gui.setItem(i * 9 + j, firstr);
                 }
                 if (arr[j] == '3') {
                     gui.setItem(i * 9 + j, secondr);
+                }
+                if (arr[j] == '4') {
+                    gui.setItem(i * 9 + j, cd.getitem());
+                }
+                if (arr[j] == '5') {
+                    gui.setItem(i * 9 + j, cp.getitem());
                 }
             }
         }
@@ -421,17 +436,28 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
                 } //右键判断
                 else if(event.getAction().name().contains("LEFT_CLICK") && player.isSneaking()){
                     Location enlo = new Location(player.getLocation().getWorld(),player.getLocation().getBlockX(),player.getLocation().getBlockY(),player.getLocation().getBlockZ(),0,0);
-                    BlockDisplay en = (BlockDisplay) world.spawnEntity(enlo, EntityType.BLOCK_DISPLAY);
-                    en.setBlock(Bukkit.createBlockData(Material.REDSTONE_BLOCK));
+                    if(MenuListener.playercopy.containsKey(player.getUniqueId())){
+                        //BlockDisplay en = (BlockDisplay) world.spawnEntity(enlo, EntityType.BLOCK_DISPLAY);
+                        MenuListener.playercopy.get(player.getUniqueId()).copy(enlo);
+                    }
+                    else {
+                        BlockDisplay en = (BlockDisplay) world.spawnEntity(enlo, EntityType.BLOCK_DISPLAY);
+                        en.setBlock(Bukkit.createBlockData(Material.REDSTONE_BLOCK));
+                    }
                     player.sendMessage(dataload.spawned);
                 }// shift右键判断
+                else if (event.getAction().name().contains("LEFT_CLICK") && !player.isSneaking()){
+                    MenuListener.playercopy.remove(player.getUniqueId());
+                }
                 event.setCancelled(true);
             }
             if(MenuListener.playeraction.containsKey(player.getUniqueId()) && (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))){
-                event.setCancelled(true);
-                player.closeInventory(); //关闭GUI
-                MenuListener.playeraction.remove(player.getUniqueId()); //删除玩家动作Map
-                openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId())); //打开GUI
+                if(!Objects.equals(MenuListener.playeraction.get(player.getUniqueId()), "cloneblock")) {
+                    event.setCancelled(true);
+                    player.closeInventory(); //关闭GUI
+                    MenuListener.playeraction.remove(player.getUniqueId()); //删除玩家动作Map
+                    openCowGUI(player, Catdisplayeditor.blockd.get(player.getUniqueId())); //打开GUI
+                }
             } //拥有动作MAP时，左键取消
             // Call the method in the main plugin class to open GUI
         }
@@ -482,6 +508,7 @@ public final class Catdisplayeditor extends JavaPlugin implements Listener{
             blockd.remove(player.getUniqueId());
             getentity.pldata.remove(player.getUniqueId());
             MenuListener.setro.remove(player.getUniqueId());
+            MenuListener.playercopy.remove(player.getUniqueId());
         }
     }
 }
